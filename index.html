@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bihar Board Study App v2</title>
+<style>
+body{margin:0;font-family:Arial,sans-serif;background:#eef4ff;color:#172033}
+header{background:#2563eb;color:white;padding:22px 16px;text-align:center}
+main{max-width:620px;margin:auto;padding:14px}.card{background:#fff;padding:18px;border-radius:16px;margin:14px 0;box-shadow:0 3px 12px #0001}
+button{width:100%;padding:13px;margin:6px 0;border:0;border-radius:10px;background:#2563eb;color:#fff;font-size:16px}
+.subject{background:#e8efff;color:#172033}.hidden{display:none}.small{color:#64748b;font-size:14px}
+.correct{background:#bbf7d0!important;color:#172033}.wrong{background:#fecaca!important;color:#172033}
+</style></head>
+<body>
+<header><h1>📚 Bihar Board Study</h1><p>कक्षा 10वीं • हिंदी माध्यम</p></header>
+<main>
+<section id="home" class="card"><h2>मुख्य पेज 👋</h2><p>अपना विषय चुनें।</p>
+<button class="subject" onclick="start('गणित')">📐 गणित</button>
+<button class="subject" onclick="start('विज्ञान')">🔬 विज्ञान</button>
+<button class="subject" onclick="start('सामाजिक विज्ञान')">🌍 सामाजिक विज्ञान</button>
+<button class="subject" onclick="start('हिंदी')">📖 हिंदी</button>
+<button class="subject" onclick="start('संस्कृत')">🪔 संस्कृत</button>
+<button class="subject" onclick="start('English')">🔤 English</button>
+<button onclick="show('notes')">📄 Notes / PDF</button></section>
+
+<section id="quiz" class="card hidden"><p id="subject" class="small"></p><p id="count" class="small"></p><h2 id="question"></h2><div id="options"></div><p id="feedback"></p><button id="next" class="hidden" onclick="nextQuestion()">अगला प्रश्न</button></section>
+<section id="result" class="card hidden"><h2>🎉 परिणाम</h2><h1 id="score"></h1><button onclick="start(currentSubject)">फिर से क्विज दें</button><button onclick="home()">मुख्य पेज</button></section>
+<section id="notes" class="card hidden"><h2>📄 Notes / PDF</h2><p>अगले चरण में अध्यायवार नोट्स और PDF लिंक जोड़े जाएँगे।</p><button onclick="home()">मुख्य पेज</button></section>
+</main>
+<script>
+const data={
+'गणित':[['√2 किस प्रकार की संख्या है?',['परिमेय','अपरिमेय','पूर्णांक','प्राकृतिक'],1],['sin 30° का मान?',['1','√3/2','1/2','0'],2]],
+'विज्ञान':[['प्रकाश की चाल सबसे अधिक किसमें होती है?',['जल','काँच','निर्वात','तेल'],2],['विद्युत धारा की SI इकाई?',['वोल्ट','एम्पियर','ओम','वाट'],1]],
+'सामाजिक विज्ञान':[['भारत का संविधान कब लागू हुआ?',['15 अगस्त 1947','26 जनवरी 1950','2 अक्टूबर 1950','26 नवंबर 1949'],1],['भारत की राजधानी क्या है?',['मुंबई','पटना','नई दिल्ली','कोलकाता'],2]],
+'हिंदी':[['संज्ञा किसे कहते हैं?',['काम को','नाम को','गुण को','भाव को'],1],['“सुंदर” कौन-सा शब्द है?',['संज्ञा','सर्वनाम','विशेषण','क्रिया'],2]],
+'संस्कृत':[['“रामः पठति” में क्रिया कौन-सी है?',['रामः','पठति','दोनों','कोई नहीं'],1]],
+'English':[['Choose the correct article: ___ apple',['a','an','thee','no article'],1]]
+};
+let currentSubject='',questions=[],index=0,points=0;
+function hide(){['home','quiz','result','notes'].forEach(id=>document.getElementById(id).classList.add('hidden'))}
+function show(id){hide();document.getElementById(id).classList.remove('hidden')}
+function home(){show('home')}
+function start(subject){currentSubject=subject;questions=data[subject];index=0;points=0;show('quiz');render()}
+function render(){let x=questions[index];document.getElementById('subject').textContent=currentSubject;document.getElementById('count').textContent=`प्रश्न ${index+1}/${questions.length}`;document.getElementById('question').textContent=x[0];document.getElementById('feedback').textContent='';document.getElementById('next').classList.add('hidden');let box=document.getElementById('options');box.innerHTML='';x[1].forEach((op,n)=>{let b=document.createElement('button');b.textContent=String.fromCharCode(65+n)+'. '+op;b.className='subject';b.onclick=()=>answer(n,b);box.appendChild(b)})}
+function answer(n,b){document.querySelectorAll('#options button').forEach(x=>x.disabled=true);let x=questions[index];if(n===x[2]){points++;b.classList.add('correct');feedback.textContent='✅ सही उत्तर'}else{b.classList.add('wrong');feedback.textContent='❌ सही उत्तर: '+x[1][x[2]]}document.getElementById('next').classList.remove('hidden')}
+function nextQuestion(){index++;if(index<questions.length)render();else{show('result');document.getElementById('score').textContent=`${points}/${questions.length} अंक`}}
+</script></body></html>
